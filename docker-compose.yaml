@@ -1,6 +1,6 @@
 version: '3.9'
 services:
-  backend:
+  backend:    
     build: .
     ports:
       - 8000:3000
@@ -8,21 +8,22 @@ services:
       - .:/app
     depends_on:
       - db
-
-  db:
-    image: mysql:5.7.22
-    restart: always
-    environment:
-      MYSQL_DATABASE: ambassador
-      MYSQL_USER: root
-      MYSQL_PASSWORD: root
-      MYSQL_ROOT_PASSWORD: root
-    volumes:
-      - .dbdata:/var/lib/mysql
-    ports:
-      - 33066:3306
-
   redis:
     image: redis
     ports:
       - 6379:6379
+  db:
+    image: 'bitnami/mariadb:10.3'
+    ports:
+      - 3306:3306
+    volumes:
+      - 'mariadb_data:/warmup_mariadb_data/mariadb'
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+      - MARIADB_DATABASE=ambassador
+      - MARIADB_USER=user
+      - MARIADB_PASSWORD=user
+
+volumes:
+  mariadb_data:
+    driver: local
